@@ -36,13 +36,18 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import org.jf.dexlib2.base.reference.BaseTypeReference;
 import org.jf.dexlib2.dexbacked.raw.ClassDefItem;
+import org.jf.dexlib2.dexbacked.raw.MethodIdItem;
 import org.jf.dexlib2.dexbacked.raw.TypeIdItem;
+import org.jf.dexlib2.dexbacked.reference.DexBackedStringReference;
+import org.jf.dexlib2.dexbacked.reference.DexBackedTypeReference;
 import org.jf.dexlib2.dexbacked.util.AnnotationsDirectory;
 import org.jf.dexlib2.dexbacked.util.EncodedArrayItemIterator;
 import org.jf.dexlib2.dexbacked.util.VariableSizeLookaheadIterator;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.reference.MethodReference;
+import org.jf.dexlib2.iface.reference.StringReference;
+import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableFieldReference;
 import org.jf.dexlib2.immutable.reference.ImmutableMethodReference;
 
@@ -55,17 +60,17 @@ import java.util.Set;
 
 public class DexBackedClassDef extends BaseTypeReference implements ClassDef {
     @Nonnull public final DexBackedDexFile dexFile;
-    private final int classDefOffset;
+    public final int classDefOffset;
 
-    private final int staticFieldsOffset;
-    private int instanceFieldsOffset = 0;
-    private int directMethodsOffset = 0;
-    private int virtualMethodsOffset = 0;
+    public final int staticFieldsOffset;
+    public int instanceFieldsOffset = 0;
+    public int directMethodsOffset = 0;
+    public int virtualMethodsOffset = 0;
 
-    private final int staticFieldCount;
-    private final int instanceFieldCount;
-    private final int directMethodCount;
-    private final int virtualMethodCount;
+    public final int staticFieldCount;
+    public final int instanceFieldCount;
+    public final int directMethodCount;
+    public final int virtualMethodCount;
 
     @Nullable private AnnotationsDirectory annotationsDirectory;
 
@@ -95,7 +100,12 @@ public class DexBackedClassDef extends BaseTypeReference implements ClassDef {
     @Nonnull
     @Override
     public String getType() {
-        return dexFile.getType(dexFile.readSmallUint(classDefOffset + ClassDefItem.CLASS_OFFSET));
+        return getTypeRef().getType();
+    }
+
+
+    public DexBackedTypeReference getTypeRef() {
+        return new DexBackedTypeReference(dexFile, dexFile.readSmallUint(classDefOffset + ClassDefItem.CLASS_OFFSET));
     }
 
     @Nullable

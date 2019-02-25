@@ -34,6 +34,7 @@ package org.jf.dexlib2.dexbacked.reference;
 import org.jf.dexlib2.base.reference.BaseTypeReference;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.dexbacked.raw.TypeIdItem;
+import org.jf.dexlib2.iface.reference.StringReference;
 
 import javax.annotation.Nonnull;
 
@@ -49,6 +50,12 @@ public class DexBackedTypeReference extends BaseTypeReference {
 
     @Nonnull public String getType() {
         return dexFile.getType(typeIndex);
+    }
+
+    public StringReference getDescriptorRef() {
+        int typeOffset = dexFile.getTypeIdItemOffset(typeIndex);
+        int stringIndex = dexFile.readSmallUint(typeOffset);
+        return new DexBackedStringReference(dexFile, stringIndex);
     }
 
 

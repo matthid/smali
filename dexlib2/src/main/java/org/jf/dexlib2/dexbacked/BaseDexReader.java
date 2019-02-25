@@ -32,6 +32,7 @@
 package org.jf.dexlib2.dexbacked;
 
 import org.jf.util.ExceptionWithContext;
+import org.jf.util.Hex;
 import org.jf.util.Utf8Utils;
 
 import javax.annotation.Nonnull;
@@ -611,6 +612,13 @@ public class BaseDexReader<T extends BaseDexBuffer> {
         String value = Utf8Utils.utf8BytesWithUtf16LengthToString(
                 dexBuf.buf, dexBuf.baseOffset + offset, utf16Length, ret);
         offset += ret[0];
+
+        // null byte
+        if (dexBuf.buf[offset] != 0){
+            throw new IllegalArgumentException("bad utf-8 byte " + Hex.u1(dexBuf.buf[offset]) +
+                    " at offset " + Hex.u4(offset) + " (expected 0 to end the byte sequence)");
+        }
+        offset += 1;
         return value;
     }
 

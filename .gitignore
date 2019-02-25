@@ -10,3 +10,11 @@
 *.ipr
 *.iws
 .idea
+
+/baksmali/out
+/dexlib/out
+/dexlib2/out
+/dexlib2/accessorTestGenerator/out
+/smali/out
+/util/out
+/smalidea/out

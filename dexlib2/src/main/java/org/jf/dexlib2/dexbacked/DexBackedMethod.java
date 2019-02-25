@@ -38,6 +38,7 @@ import org.jf.dexlib2.dexbacked.raw.MethodIdItem;
 import org.jf.dexlib2.dexbacked.raw.ProtoIdItem;
 import org.jf.dexlib2.dexbacked.raw.TypeListItem;
 import org.jf.dexlib2.dexbacked.reference.DexBackedMethodReference;
+import org.jf.dexlib2.dexbacked.reference.DexBackedStringReference;
 import org.jf.dexlib2.dexbacked.util.AnnotationsDirectory;
 import org.jf.dexlib2.dexbacked.util.FixedSizeList;
 import org.jf.dexlib2.dexbacked.util.ParameterIterator;
@@ -45,6 +46,7 @@ import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodImplementation;
 import org.jf.dexlib2.iface.MethodParameter;
+import org.jf.dexlib2.iface.reference.StringReference;
 import org.jf.util.AbstractForwardSequentialList;
 
 import javax.annotation.Nonnull;
@@ -59,16 +61,16 @@ public class DexBackedMethod extends BaseMethodReference implements Method {
 
     public final int accessFlags;
 
-    private final int codeOffset;
-    private final int parameterAnnotationSetListOffset;
-    private final int methodAnnotationSetOffset;
+    public final int codeOffset;
+    public final int parameterAnnotationSetListOffset;
+    public final int methodAnnotationSetOffset;
 
     public final int methodIndex;
-    private final int startOffset;
+    public final int startOffset;
 
-    private int methodIdItemOffset;
-    private int protoIdItemOffset;
-    private int parametersOffset = -1;
+    public int methodIdItemOffset;
+    public int protoIdItemOffset;
+    public int parametersOffset = -1;
 
     public DexBackedMethod(@Nonnull DexReader reader,
                            @Nonnull DexBackedClassDef classDef,
@@ -115,7 +117,11 @@ public class DexBackedMethod extends BaseMethodReference implements Method {
     @Nonnull
     @Override
     public String getName() {
-        return dexFile.getString(dexFile.readSmallUint(getMethodIdItemOffset() + MethodIdItem.NAME_OFFSET));
+        return getNameRef().getString();
+    }
+
+    public StringReference getNameRef() {
+        return new DexBackedStringReference(dexFile, dexFile.readSmallUint(getMethodIdItemOffset() + MethodIdItem.NAME_OFFSET));
     }
 
     @Nonnull
